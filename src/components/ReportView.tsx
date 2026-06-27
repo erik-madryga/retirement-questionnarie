@@ -39,8 +39,6 @@ const severityStyles: Record<Severity, { border: string; background: string; ico
 };
 
 export default function ReportView({ answers, onRestart }: ReportViewProps) {
-  const [recipientEmail, setRecipientEmail] = useState(answers.email || '');
-  const [ccEmail, setCcEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const findings: Finding[] = [];
@@ -124,19 +122,6 @@ export default function ReportView({ answers, onRestart }: ReportViewProps) {
   };
 
   const handleSubmit = async () => {
-    const normalizedRecipient = recipientEmail.trim();
-    const normalizedCc = ccEmail.trim();
-
-    if (!normalizedRecipient || !/\S+@\S+\.\S+/.test(normalizedRecipient)) {
-      setSubmitMessage('Please enter a valid recipient email address.');
-      return;
-    }
-
-    if (normalizedCc && !/\S+@\S+\.\S+/.test(normalizedCc)) {
-      setSubmitMessage('Please enter a valid CC email address.');
-      return;
-    }
-
     setIsSubmitting(true);
     setSubmitMessage('');
 
@@ -153,8 +138,6 @@ export default function ReportView({ answers, onRestart }: ReportViewProps) {
             detail: item.detail,
             severity: item.severity,
           })),
-          recipientEmail: normalizedRecipient,
-          ccEmail: normalizedCc,
         }),
       });
 
@@ -210,28 +193,11 @@ export default function ReportView({ answers, onRestart }: ReportViewProps) {
       <div style={{ display: 'grid', gap: '16px', marginTop: '24px' }}>
         <div style={{ border: '1px solid rgba(255,255,255,0.08)', borderRadius: 'var(--radius-md)', padding: '20px', background: 'rgba(255,255,255,0.03)' }}>
           <h2 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '12px' }}>Send this report</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '14px', lineHeight: 1.5 }}>
-            Deliver the questionnaire results to an email address and include a CSV attachment that opens cleanly in Excel or Google Sheets.
-          </p>
           <div style={{ display: 'grid', gap: '12px' }}>
-            <input
-              type="email"
-              placeholder="Send to email"
-              value={recipientEmail}
-              onChange={(event) => setRecipientEmail(event.target.value)}
-              style={{ padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(2,6,23,0.6)', color: 'var(--text-primary)' }}
-            />
-            <input
-              type="email"
-              placeholder="CC (optional)"
-              value={ccEmail}
-              onChange={(event) => setCcEmail(event.target.value)}
-              style={{ padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(2,6,23,0.6)', color: 'var(--text-primary)' }}
-            />
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isSubmitting || !recipientEmail.trim()}
+              disabled={isSubmitting}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -240,11 +206,11 @@ export default function ReportView({ answers, onRestart }: ReportViewProps) {
                 padding: '12px 16px',
                 borderRadius: '12px',
                 border: 'none',
-                background: isSubmitting || !recipientEmail.trim() ? 'rgba(99, 102, 241, 0.25)' : 'var(--color-indigo)',
+                background: isSubmitting ? 'rgba(99, 102, 241, 0.25)' : 'var(--color-indigo)',
                 color: '#fff',
-                cursor: isSubmitting || !recipientEmail.trim() ? 'not-allowed' : 'pointer',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 fontWeight: 700,
-                boxShadow: isSubmitting || !recipientEmail.trim() ? 'none' : '0 8px 24px rgba(99, 102, 241, 0.28)',
+                boxShadow: isSubmitting ? 'none' : '0 8px 24px rgba(99, 102, 241, 0.28)',
               }}
             >
               <Send size={18} />
