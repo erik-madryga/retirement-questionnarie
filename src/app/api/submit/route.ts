@@ -95,7 +95,6 @@ export async function POST(request: Request) {
   const resendApiKey = process.env.RESEND_API_KEY?.trim();
   const resendFrom = process.env.RESEND_FROM?.trim() || 'Retirement Check-Up <onboarding@resend.dev>';
   const recipientEmail = process.env.REPORT_RECIPIENT_EMAIL?.trim();
-  const ccEmail = typeof answers.email === 'string' ? answers.email.trim() : '';
 
   if (!resendApiKey) {
     console.warn('RESEND_API_KEY is not configured. Email delivery was skipped.');
@@ -141,7 +140,6 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       from: resendFrom,
       to: [recipientEmail],
-      cc: ccEmail ? [ccEmail] : undefined,
       subject,
       text: textBody,
       html: htmlBody,

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AlertTriangle, ShieldCheck, Sparkles, RotateCcw, Send } from 'lucide-react';
+import { AlertTriangle, ShieldCheck, Sparkles, RotateCcw, Send, Download } from 'lucide-react';
 import type { AnswerState } from './Questionnaire';
 
 interface ReportViewProps {
@@ -15,6 +15,48 @@ interface Finding {
   severity: Severity;
   title: string;
   detail: string;
+}
+
+function escapeCsv(value: unknown) {
+  const stringValue = value == null ? '' : String(value);
+  return `"${stringValue.replace(/"/g, '""')}"`;
+}
+
+function sanitizeForFilename(value: string) {
+  return value
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^A-Za-z0-9-_]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase();
+}
+
+function buildCsvContent(answers: AnswerState, findings: Finding[]) {
+  const rows: Array<Array<string | number>> = [
+    ['Category', 'Value'],
+    ['firstName', answers.firstName ?? ''],
+    ['lastName', answers.lastName ?? ''],
+    ['email', answers.email ?? ''],
+    ['phoneNumber', answers.phoneNumber ?? ''],
+    ['age', answers.age ?? ''],
+    ['companyPlan', answers.companyPlan ?? ''],
+    ['hsaContrib', answers.hsaContrib ?? ''],
+    ['medicarePlan', answers.medicarePlan ?? ''],
+    ['rothConversions', answers.rothConversions ?? ''],
+    ['socialSecurity', answers.socialSecurity ?? ''],
+    ['pre65Health', answers.pre65Health ?? ''],
+    ['cashBuffer', answers.cashBuffer ?? ''],
+    ['rmdKnowledge', answers.rmdKnowledge ?? ''],
+    ['stateTaxCheck', answers.stateTaxCheck ?? ''],
+    ['diagnosisCount', findings.length],
+  ];
+
+  findings.forEach((finding) => {
+    rows.push(['finding', `${finding.severity}:${finding.title} | ${finding.detail}`]);
+  });
+
+  return rows.map((row) => row.map(escapeCsv).join(',')).join('\n');
 }
 
 const severityStyles: Record<Severity, { border: string; background: string; iconColor: string; label: string }> = {
@@ -154,6 +196,27 @@ export default function ReportView({ answers, onRestart }: ReportViewProps) {
     }
   };
 
+  const handleDownload = () => {
+    const csv = buildCsvContent(answers, findings);
+    const fullName = [answers.firstName, answers.lastName]
+      .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+      .map((value) => value.trim())
+      .join(' ');
+    const filename = fullName
+      ? `retirement-questionnaire-results-${sanitizeForFilename(fullName)}.csv`
+      : 'retirement-questionnaire-results.csv';
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="glass-panel fade-in" style={{ padding: '40px', maxWidth: '760px', margin: '0 auto', width: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '24px' }}>
@@ -216,6 +279,29 @@ export default function ReportView({ answers, onRestart }: ReportViewProps) {
               <Send size={18} />
               {isSubmitting ? 'Sending…' : 'Send report'}
             </button>
+            <button
+              type="button"
+              onClick={handleDownload}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.04)',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                fontWeight: 700,
+              }}
+            >
+              <Download size={18} />
+              Download report
+            </button>
+            <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.94rem' }}>
+              You can also download a copy of this report locally instead of receiving a copy by email.
+            </p>
             {submitMessage ? (
               <div
                 style={{
