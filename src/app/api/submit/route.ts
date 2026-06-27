@@ -5,8 +5,6 @@ export const runtime = 'nodejs';
 interface SubmissionPayload {
   answers: Record<string, unknown>;
   findings?: Array<{ title: string; detail: string; severity: string }>;
-  recipientEmail?: string;
-  ccEmail?: string;
 }
 
 function escapeCsv(value: unknown) {
@@ -14,9 +12,23 @@ function escapeCsv(value: unknown) {
   return `"${stringValue.replace(/"/g, '""')}"`;
 }
 
+function sanitizeForFilename(value: string) {
+  return value
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^A-Za-z0-9-_]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase();
+}
+
 function buildCsvContent(answers: Record<string, unknown>, findings: Array<{ title: string; detail: string; severity: string }>) {
   const rows = [
     ['Category', 'Value'],
+    ['firstName', answers.firstName ?? ''],
+    ['lastName', answers.lastName ?? ''],
+    ['email', answers.email ?? ''],
+    ['phoneNumber', answers.phoneNumber ?? ''],
     ['age', answers.age ?? ''],
     ['companyPlan', answers.companyPlan ?? ''],
     ['hsaContrib', answers.hsaContrib ?? ''],
@@ -41,6 +53,13 @@ function buildTextBody(answers: Record<string, unknown>, findings: Array<{ title
   const lines = [
     'Retirement Questionnaire Results',
     '===============================',
+    '',
+    'Contact Information',
+    '-------------------',
+    `First Name: ${answers.firstName ?? ''}`,
+    `Last Name: ${answers.lastName ?? ''}`,
+    `Email: ${answers.email ?? ''}`,
+    `Phone Number: ${answers.phoneNumber ?? ''}`,
     '',
     'Answers',
     '-------',
@@ -70,23 +89,38 @@ function buildTextBody(answers: Record<string, unknown>, findings: Array<{ title
 
 export async function POST(request: Request) {
   const body = (await request.json()) as SubmissionPayload;
-  const recipientEmail = body.recipientEmail?.trim();
-  const ccEmail = body.ccEmail?.trim();
   const answers = body.answers ?? {};
   const findings = Array.isArray(body.findings) ? body.findings : [];
 
-  if (!recipientEmail) {
-    return NextResponse.json({ error: 'Recipient email is required.' }, { status: 400 });
+  const resendApiKey = process.env.RESEND_API_KEY?.trim();
+  const resendFrom = process.env.RESEND_FROM?.trim() || 'Retirement Check-Up <onboarding@resend.dev>';
+  const recipientEmail = process.env.REPORT_RECIPIENT_EMAIL?.trim();
+  const ccEmail = typeof answers.email === 'string' ? answers.email.trim() : '';
+
+  if (!resendApiKey) {
+    console.warn('RESEND_API_KEY is not configured. Email delivery was skipped.');
+    return NextResponse.json({
+      ok: true,
+      message: 'Email delivery was skipped because RESEND_API_KEY is not configured.',
+      skipped: true,
+    });
   }
 
-  if (!process.env.RESEND_API_KEY) {
+  if (!recipientEmail) {
     return NextResponse.json(
-      {
-        error: 'RESEND_API_KEY is not configured. Set it in your environment to send emails.',
-      },
+      { error: 'REPORT_RECIPIENT_EMAIL is not configured. Set it in your environment to send emails.' },
       { status: 500 }
     );
   }
+
+  const fullName = [answers.firstName, answers.lastName]
+    .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+    .map((value) => value.trim())
+    .join(' ');
+  const subject = fullName ? `Retirement questionnaire results for ${fullName}` : 'Retirement questionnaire results';
+  const filenamePrefix = fullName
+    ? `retirement-questionnaire-results-${sanitizeForFilename(fullName)}`
+    : 'retirement-questionnaire-results';
 
   const csvContent = buildCsvContent(answers as Record<string, unknown>, findings);
   const textBody = buildTextBody(answers as Record<string, unknown>, findings);
@@ -101,19 +135,19 @@ export async function POST(request: Request) {
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      Authorization: `Bearer ${resendApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: process.env.RESEND_FROM || 'Retirement Check-Up <onboarding@resend.dev>',
+      from: resendFrom,
       to: [recipientEmail],
       cc: ccEmail ? [ccEmail] : undefined,
-      subject: 'Retirement questionnaire results',
+      subject,
       text: textBody,
       html: htmlBody,
       attachments: [
         {
-          filename: 'retirement-questionnaire-results.csv',
+          filename: `${filenamePrefix}.csv`,
           content: Buffer.from(csvContent).toString('base64'),
         },
       ],

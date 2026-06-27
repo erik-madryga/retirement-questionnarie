@@ -180,7 +180,7 @@ export default function Questionnaire({ onComplete }: QuestionnaireProps) {
                   placeholder="First name"
                   value={answers.firstName}
                   onChange={(e) => updateAnswer('firstName', e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: contactErrors.firstName ? '1px solid var(--color-red)' : '1px solid rgba(255,255,255,0.1)', background: 'rgba(2,6,23,0.6)', color: 'var(--text-primary)' }}
+                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: contactErrors.firstName ? '1px solid var(--color-red)' : '1px solid var(--input-border)', background: 'var(--input-bg)', color: 'var(--text-primary)' }}
                 />
                 {contactErrors.firstName ? <p style={{ color: 'var(--color-red)', marginTop: '6px', fontSize: '0.9rem' }}>{contactErrors.firstName}</p> : null}
               </div>
@@ -190,7 +190,7 @@ export default function Questionnaire({ onComplete }: QuestionnaireProps) {
                   placeholder="Last name"
                   value={answers.lastName}
                   onChange={(e) => updateAnswer('lastName', e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: contactErrors.lastName ? '1px solid var(--color-red)' : '1px solid rgba(255,255,255,0.1)', background: 'rgba(2,6,23,0.6)', color: 'var(--text-primary)' }}
+                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: contactErrors.lastName ? '1px solid var(--color-red)' : '1px solid var(--input-border)', background: 'var(--input-bg)', color: 'var(--text-primary)' }}
                 />
                 {contactErrors.lastName ? <p style={{ color: 'var(--color-red)', marginTop: '6px', fontSize: '0.9rem' }}>{contactErrors.lastName}</p> : null}
               </div>
@@ -200,7 +200,7 @@ export default function Questionnaire({ onComplete }: QuestionnaireProps) {
                   placeholder="Phone number"
                   value={answers.phoneNumber}
                   onChange={(e) => updateAnswer('phoneNumber', e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: contactErrors.phoneNumber ? '1px solid var(--color-red)' : '1px solid rgba(255,255,255,0.1)', background: 'rgba(2,6,23,0.6)', color: 'var(--text-primary)' }}
+                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: contactErrors.phoneNumber ? '1px solid var(--color-red)' : '1px solid var(--input-border)', background: 'var(--input-bg)', color: 'var(--text-primary)' }}
                 />
                 {contactErrors.phoneNumber ? <p style={{ color: 'var(--color-red)', marginTop: '6px', fontSize: '0.9rem' }}>{contactErrors.phoneNumber}</p> : null}
               </div>
@@ -210,7 +210,7 @@ export default function Questionnaire({ onComplete }: QuestionnaireProps) {
                   placeholder="Email address"
                   value={answers.email}
                   onChange={(e) => updateAnswer('email', e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: contactErrors.email ? '1px solid var(--color-red)' : '1px solid rgba(255,255,255,0.1)', background: 'rgba(2,6,23,0.6)', color: 'var(--text-primary)' }}
+                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: contactErrors.email ? '1px solid var(--color-red)' : '1px solid var(--input-border)', background: 'var(--input-bg)', color: 'var(--text-primary)' }}
                 />
                 {contactErrors.email ? <p style={{ color: 'var(--color-red)', marginTop: '6px', fontSize: '0.9rem' }}>{contactErrors.email}</p> : null}
               </div>

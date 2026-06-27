@@ -118,8 +118,7 @@ describe('Questionnaire', () => {
       stateTaxCheck: 'no',
     }} onRestart={onRestart} />);
 
-    const recipientInput = screen.getByPlaceholderText(/Send to email/i);
-    await userEvent.type(recipientInput, 'jane@example.com');
+    expect(screen.queryByPlaceholderText(/Send to email/i)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: /Send report/i }));
 
     expect(fetchMock).toHaveBeenCalled();

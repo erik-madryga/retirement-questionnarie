@@ -2,32 +2,34 @@
 
 :root {
   --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --bg-gradient: radial-gradient(circle at top right, #1e1b4b 0%, #0f172a 60%, #020617 100%);
-  --bg-color: #020617;
   
-  --card-bg: rgba(15, 23, 42, 0.6);
-  --card-border: rgba(255, 255, 255, 0.07);
-  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  /* Light mode (default for light mode preference) */
+  --bg-gradient: linear-gradient(135deg, #f5f3ff 0%, #f0f4ff 100%);
+  --bg-color: #ffffff;
   
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(99, 102, 241, 0.1);
+  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.06);
+  
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
   
   --color-indigo: #6366f1;
-  --color-indigo-hover: #818cf8;
-  --color-indigo-light: rgba(99, 102, 241, 0.15);
+  --color-indigo-hover: #4f46e5;
+  --color-indigo-light: rgba(99, 102, 241, 0.1);
   
   --color-red: #f43f5e;
-  --color-red-light: rgba(244, 63, 94, 0.12);
-  --color-red-border: rgba(244, 63, 94, 0.25);
+  --color-red-light: rgba(244, 63, 94, 0.1);
+  --color-red-border: rgba(244, 63, 94, 0.2);
   
   --color-yellow: #f59e0b;
-  --color-yellow-light: rgba(245, 158, 11, 0.12);
-  --color-yellow-border: rgba(245, 158, 11, 0.25);
+  --color-yellow-light: rgba(245, 158, 11, 0.1);
+  --color-yellow-border: rgba(245, 158, 11, 0.2);
   
   --color-green: #10b981;
-  --color-green-light: rgba(16, 185, 129, 0.12);
-  --color-green-border: rgba(16, 185, 129, 0.25);
+  --color-green-light: rgba(16, 185, 129, 0.1);
+  --color-green-border: rgba(16, 185, 129, 0.2);
   
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -35,6 +37,54 @@
   
   --transition-fast: 0.2s ease;
   --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --input-bg: rgba(255, 255, 255, 0.8);
+  --input-border: rgba(99, 102, 241, 0.2);
+  --input-placeholder: rgba(0, 0, 0, 0.4);
+  --slider-bg: rgba(99, 102, 241, 0.15);
+  --option-button-bg: rgba(99, 102, 241, 0.08);
+  --option-button-border: rgba(99, 102, 241, 0.2);
+  --option-circle-border: rgba(99, 102, 241, 0.4);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-gradient: radial-gradient(circle at top right, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+    --bg-color: #020617;
+    
+    --card-bg: rgba(15, 23, 42, 0.6);
+    --card-border: rgba(255, 255, 255, 0.07);
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    --color-indigo: #6366f1;
+    --color-indigo-hover: #818cf8;
+    --color-indigo-light: rgba(99, 102, 241, 0.15);
+    
+    --color-red: #f43f5e;
+    --color-red-light: rgba(244, 63, 94, 0.12);
+    --color-red-border: rgba(244, 63, 94, 0.25);
+    
+    --color-yellow: #f59e0b;
+    --color-yellow-light: rgba(245, 158, 11, 0.12);
+    --color-yellow-border: rgba(245, 158, 11, 0.25);
+    
+    --color-green: #10b981;
+    --color-green-light: rgba(16, 185, 129, 0.12);
+    --color-green-border: rgba(16, 185, 129, 0.25);
+    
+    --input-bg: rgba(2, 6, 23, 0.6);
+    --input-border: rgba(255, 255, 255, 0.1);
+    --input-placeholder: rgba(255, 255, 255, 0.4);
+    --slider-bg: rgba(255, 255, 255, 0.1);
+    --option-button-bg: rgba(30, 41, 59, 0.4);
+    --option-button-border: rgba(255, 255, 255, 0.05);
+    --option-circle-border: rgba(255, 255, 255, 0.3);
+  }
 }
 
 * {
@@ -64,15 +114,30 @@ body {
 ::-webkit-scrollbar {
   width: 10px;
 }
+
+/* Light mode scrollbar */
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(99, 102, 241, 0.05);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(99, 102, 241, 0.2);
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.4);
+}
+
+/* Dark mode scrollbar */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.5);
+  }
 }
 
 /* Glassmorphism Card base */
@@ -94,10 +159,27 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
+/* Input placeholder styling */
+input::placeholder {
+  color: var(--input-placeholder);
+}
+
+input::-webkit-input-placeholder {
+  color: var(--input-placeholder);
+}
+
+input:-moz-placeholder {
+  color: var(--input-placeholder);
+}
+
+input::-moz-placeholder {
+  color: var(--input-placeholder);
+}
+
 /* Custom interactive input components */
 .option-button {
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--option-button-bg);
+  border: 1px solid var(--option-button-border);
   border-radius: var(--radius-md);
   padding: 18px 24px;
   color: var(--text-primary);
@@ -129,7 +211,7 @@ select:focus-visible {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid var(--option-circle-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +257,7 @@ select:focus-visible {
   width: 100%;
   height: 10px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--slider-bg);
   outline: none;
   transition: background var(--transition-fast);
 }
