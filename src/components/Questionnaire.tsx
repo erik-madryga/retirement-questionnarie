@@ -171,7 +171,7 @@ export default function Questionnaire({ onComplete }: QuestionnaireProps) {
               Tell us who you are before we review your retirement plan.
             </h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '1rem', lineHeight: '1.5' }}>
-              We’ll use this to personalize your report and send the diagnosis to the right email address.
+              We’ll use this to personalize your report before it is sent to our team.
             </p>
             <div style={{ display: 'grid', gap: '12px' }}>
               <div>

@@ -36,7 +36,7 @@ describe('submit API route', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('uses the configured recipient email and the submitted email as cc', async () => {
+  it('sends the report only to the configured recipient email', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       text: vi.fn().mockResolvedValue('ok'),
@@ -71,7 +71,7 @@ describe('submit API route', () => {
     const payload = JSON.parse(init.body as string);
 
     expect(payload.to).toEqual(['office@example.com']);
-    expect(payload.cc).toEqual(['jane@example.com']);
+    expect(payload.cc).toBeUndefined();
   });
 
   it('includes contact information in the email subject and body', async () => {
